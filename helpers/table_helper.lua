@@ -1,9 +1,9 @@
 TableHelper = {
-    arr = {}
+    table = {}
 }
 
 -- Construct.
-function TableHelper:new(o) -- TableHelper
+function TableHelper:_new(o) -- TableHelper
     o = o or {}
 
     setmetatable(o, self)
@@ -13,41 +13,17 @@ function TableHelper:new(o) -- TableHelper
 end
 
 -- Set the inner table.
-function TableHelper:with(arr) -- TableHelper
-    self.arr = arr
+function TableHelper:_with(table) -- TableHelper
+    self.table = table
     return self
 end
 
--- Get the inner table.
-function TableHelper:get() -- table
-    return self.arr
+-- Make returns a new instance of this class.
+function TableHelper:make(table)
+    return self:_new():_with(table)
 end
 
--- Map applies the function to each value of the inner table and returns a new TableHelper with the new values.
-function TableHelper:map(fn) -- TableHelper
-    out = {}
-
-    for _, v in ipairs(self.arr) do
-        table.insert(out, fn(v))
-    end
-
-    return self:with(out)
-end
-
--- Filter returns a new TableHelper with all of the values in the inner table which pass the given predicate.
-function TableHelper:filter(fn) -- TableHelper
-    out = {}
-
-    for _, v in ipairs(self.arr) do
-        if fn(v) then
-            table.insert(out, v)
-        end
-    end
-
-    return self:with(out)
-end
-
--- Range returns a new TableHelper with the inner table set to a range from first to last, skipping whatever is provided in the step value.
+-- Range returns a new TableHelper with the table set to a range from first to last, skipping whatever is provided in the step value.
 function TableHelper:range(first, last, step) -- TableHelper
     step = step or 1
     out = {}
@@ -56,12 +32,41 @@ function TableHelper:range(first, last, step) -- TableHelper
         table.insert(out, i)
     end
 
-    return self:with(out)
+    return self:_new():_with(out)
 end
 
--- All returns true if all of the elements in the inner table pass the predicate; else it returns false.
+-- Get gets the table.
+function TableHelper:get() -- table
+    return self.table
+end
+
+-- Map applies the function to each value of the table and returns a new TableHelper with the results.
+function TableHelper:map(fn) -- TableHelper
+    out = {}
+
+    for _, v in ipairs(self.table) do
+        table.insert(out, fn(v))
+    end
+
+    return self:make(out)
+end
+
+-- Filter returns a new TableHelper with all of the values in the table which pass the given predicate.
+function TableHelper:filter(fn) -- TableHelper
+    out = {}
+
+    for _, v in ipairs(self.table) do
+        if fn(v) then
+            table.insert(out, v)
+        end
+    end
+
+    return self:make(out)
+end
+
+-- All returns true if all of the elements in the table pass the predicate; else it returns false.
 function TableHelper:all(fn) -- bool
-    for _, v in pairs(self.arr) do
+    for _, v in pairs(self.table) do
         if not fn(v) then
             return false
         end
@@ -70,9 +75,9 @@ function TableHelper:all(fn) -- bool
     return true
 end
 
--- Any returns true if any of the elements in the inner table pass the predicate; else it returns false.
+-- Any returns true if any of the elements in the table pass the predicate; else it returns false.
 function TableHelper:any(fn) -- bool
-    for _, v in pairs(self.arr) do
+    for _, v in pairs(self.table) do
         if fn(v) then
             return true
         end
@@ -85,7 +90,7 @@ end
 function TableHelper:break_(fn) -- TableHelper, TableHelper
     local left, right, broken = {}, {}, false
 
-    for _, v in ipairs(self.arr) do
+    for _, v in ipairs(self.table) do
         if broken or fn(v) then
             table.insert(right, v)
             broken = true
@@ -94,14 +99,14 @@ function TableHelper:break_(fn) -- TableHelper, TableHelper
         end
     end
 
-    return self:new():with(left), self:new():with(right)
+    return self:make(left), self:make(right)
 end
 
 -- Delete returns all of the elements except for the first occurence of the given element.
 function TableHelper:delete(x) -- TableHelper
     local out, deleted = {}, false
 
-    for _, v in ipairs(self.arr) do
+    for _, v in ipairs(self.table) do
         if deleted or v ~= x then
             table.insert(out, v)
         else
@@ -109,18 +114,18 @@ function TableHelper:delete(x) -- TableHelper
         end
     end
 
-    return self:new():with(out)
+    return self:make(out)
 end
 
 -- Drop returns all of the elements without the first n elements.
 function TableHelper:drop(n) -- TableHelper
-    if n >= #self.arr then
-        return self:new():with({})
+    if n >= #self.table then
+        return self:make({})
     end
 
     -- Doing it with an incrementing count variable rather than accessing the numerical index in case of dictionary table
     local out, i = {}, 1
-    for _, v in ipairs(self.arr) do
+    for _, v in ipairs(self.table) do
         if i > n then
             table.insert(out, v)
         end
@@ -128,14 +133,14 @@ function TableHelper:drop(n) -- TableHelper
         i = i + 1
     end
 
-    return self:new():with(out)
+    return self:make(out)
 end
 
--- Drop elements from the table while the given predicate remains true.
+-- Drop drops elements from the table while the given predicate remains true.
 function TableHelper:dropWhile(fn) -- TableHelper
     local out, failed = {}, false
 
-    for _, v in ipairs(self.arr) do
+    for _, v in ipairs(self.table) do
         if failed then
             table.insert(out, v)
         elseif not fn(v) then
@@ -144,10 +149,23 @@ function TableHelper:dropWhile(fn) -- TableHelper
         end
     end
 
-    return self:new():with(out)
+    return self:make(out)
 end
 
--- Implode creates a string, separated by the given character, containing all of the values in the inner table.
-function TableHelper:implode(char) -- string
-    return table.concat(self.arr, char)
+-- Sum returns the sum of all elements in the table.
+function TableHelper:sum() -- int
+    local out = 0
+
+    for _, v in pairs(self.table) do
+        out = out + v
+    end
+
+    return out
 end
+
+-- Implode creates a string, separated by the given character, containing all of the values in the table.
+function TableHelper:implode(char) -- string
+    return table.concat(self.table, char)
+end
+
+return TableHelper
