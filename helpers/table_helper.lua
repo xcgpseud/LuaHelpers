@@ -82,7 +82,7 @@ function TableHelper:any(fn) -- bool
 end
 
 -- Break returns all elements until the predicate passes, followed by the first matching element and the remaining ones.
-function TableHelper:break_(fn) -- table, table
+function TableHelper:break_(fn) -- TableHelper, TableHelper
     local left, right, broken = {}, {}, false
 
     for _, v in ipairs(self.arr) do
@@ -94,7 +94,57 @@ function TableHelper:break_(fn) -- table, table
         end
     end
 
-    return left, right
+    return self:new():with(left), self:new():with(right)
+end
+
+-- Delete returns all of the elements except for the first occurence of the given element.
+function TableHelper:delete(x) -- TableHelper
+    local out, deleted = {}, false
+
+    for _, v in ipairs(self.arr) do
+        if deleted or v ~= x then
+            table.insert(out, v)
+        else
+            deleted = true
+        end
+    end
+
+    return self:new():with(out)
+end
+
+-- Drop returns all of the elements without the first n elements.
+function TableHelper:drop(n) -- TableHelper
+    if n >= #self.arr then
+        return self:new():with({})
+    end
+
+    -- Doing it with an incrementing count variable rather than accessing the numerical index in case of dictionary table
+    local out, i = {}, 1
+    for _, v in ipairs(self.arr) do
+        if i > n then
+            table.insert(out, v)
+        end
+
+        i = i + 1
+    end
+
+    return self:new():with(out)
+end
+
+-- Drop elements from the table while the given predicate remains true.
+function TableHelper:dropWhile(fn) -- TableHelper
+    local out, failed = {}, false
+
+    for _, v in ipairs(self.arr) do
+        if failed then
+            table.insert(out, v)
+        elseif not fn(v) then
+            table.insert(out, v)
+            failed = true
+        end
+    end
+
+    return self:new():with(out)
 end
 
 -- Implode creates a string, separated by the given character, containing all of the values in the inner table.

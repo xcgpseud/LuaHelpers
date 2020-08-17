@@ -65,14 +65,32 @@ end
 function TestTableHelper:testBreak_()
     local left, right = self.make({1, 3, 4, 5, 7}):break_(self.checkEven)
 
-    lu.assertEquals(left, {1, 3})
-    lu.assertEquals(right, {4, 5, 7})
+    lu.assertEquals(left:get(), {1, 3})
+    lu.assertEquals(right:get(), {4, 5, 7})
+end
+
+function TestTableHelper:testDelete()
+    local result = self.make({1, 2, 3, 2, 1}):delete(2):get()
+
+    lu.assertEquals(result, {1, 3, 2, 1})
+end
+
+function TestTableHelper:testDrop()
+    local result = self.make({1, 2, 3, 4, 5}):drop(2):get()
+
+    lu.assertEquals(result, {3, 4, 5})
 end
 
 function TestTableHelper:testImplode()
     local result = self.make({1, 2, 3}):implode(", ")
 
     lu.assertEquals(result, "1, 2, 3")
+end
+
+function TestTableHelper:testDropWhile()
+    local result = self.make({2, 4, 5, 4, 2}):dropWhile(self.checkEven):get()
+
+    lu.assertEquals(result, {5, 4, 2})
 end
 
 os.exit(lu.LuaUnit.run())
