@@ -1,11 +1,11 @@
-require("luahelpers")
+require("helpers.table_helper")
 lu = require("luaunit")
 
-TestLuaHelpers = {}
+TestTableHelper = {}
 
-function TestLuaHelpers:setUp()
+function TestTableHelper:setUp()
     self.make = function(table)
-        return LuaHelpers:new():with(table)
+        return TableHelper:new():with(table)
     end
 
     self.checkEven = function(i)
@@ -17,36 +17,36 @@ function TestLuaHelpers:setUp()
     end
 end
 
-function TestLuaHelpers:tearDown()
+function TestTableHelper:tearDown()
 end
 
-function TestLuaHelpers:testGet()
+function TestTableHelper:testGet()
     local result = self.make({1, 2, 3}):get()
 
     lu.assertEquals(result, {1, 2, 3})
 end
 
-function TestLuaHelpers:testRange()
-    local withoutStep = LuaHelpers:new():range(1, 5):get()
-    local withStep = LuaHelpers:new():range(1, 5, 2):get()
+function TestTableHelper:testRange()
+    local withoutStep = TableHelper:new():range(1, 5):get()
+    local withStep = TableHelper:new():range(1, 5, 2):get()
 
     lu.assertEquals(withoutStep, {1, 2, 3, 4, 5})
     lu.assertEquals(withStep, {1, 3, 5})
 end
 
-function TestLuaHelpers:testMap()
+function TestTableHelper:testMap()
     local result = self.make({1, 2, 3, 4, 5}):map(self.x2):get()
 
     lu.assertEquals(result, {2, 4, 6, 8, 10})
 end
 
-function TestLuaHelpers:testFilter()
+function TestTableHelper:testFilter()
     local result = self.make({1, 2, 3, 4, 5}):filter(self.checkEven):get()
 
     lu.assertEquals(result, {2, 4})
 end
 
-function TestLuaHelpers:testAll()
+function TestTableHelper:testAll()
     local pass = self.make({2, 4, 6}):all(self.checkEven)
     local fail = self.make({2, 4, 5}):all(self.checkEven)
 
@@ -54,7 +54,7 @@ function TestLuaHelpers:testAll()
     lu.assertEquals(fail, false)
 end
 
-function TestLuaHelpers:testAny()
+function TestTableHelper:testAny()
     local pass = self.make({3, 4, 5}):any(self.checkEven)
     local fail = self.make({3, 5, 7}):any(self.checkEven)
 
@@ -62,14 +62,14 @@ function TestLuaHelpers:testAny()
     lu.assertEquals(fail, false)
 end
 
-function TestLuaHelpers:testBreak_()
+function TestTableHelper:testBreak_()
     local left, right = self.make({1, 3, 4, 5, 7}):break_(self.checkEven)
 
     lu.assertEquals(left, {1, 3})
     lu.assertEquals(right, {4, 5, 7})
 end
 
-function TestLuaHelpers:testImplode()
+function TestTableHelper:testImplode()
     local result = self.make({1, 2, 3}):implode(", ")
 
     lu.assertEquals(result, "1, 2, 3")

@@ -1,9 +1,9 @@
-LuaHelpers = {
+TableHelper = {
     arr = {}
 }
 
 -- Construct.
-function LuaHelpers:new(o) -- LuaHelpers
+function TableHelper:new(o) -- TableHelper
     o = o or {}
 
     setmetatable(o, self)
@@ -13,18 +13,18 @@ function LuaHelpers:new(o) -- LuaHelpers
 end
 
 -- Set the inner table.
-function LuaHelpers:with(arr) -- LuaHelpers
+function TableHelper:with(arr) -- TableHelper
     self.arr = arr
     return self
 end
 
 -- Get the inner table.
-function LuaHelpers:get() -- table
+function TableHelper:get() -- table
     return self.arr
 end
 
--- Map applies the function to each value of the inner table and returns a new LuaHelpers with the new values.
-function LuaHelpers:map(fn) -- LuaHelpers
+-- Map applies the function to each value of the inner table and returns a new TableHelper with the new values.
+function TableHelper:map(fn) -- TableHelper
     out = {}
 
     for _, v in ipairs(self.arr) do
@@ -34,8 +34,8 @@ function LuaHelpers:map(fn) -- LuaHelpers
     return self:with(out)
 end
 
--- Filter returns a new LuaHelpers with all of the values in the inner table which pass the given predicate.
-function LuaHelpers:filter(fn) -- LuaHelpers
+-- Filter returns a new TableHelper with all of the values in the inner table which pass the given predicate.
+function TableHelper:filter(fn) -- TableHelper
     out = {}
 
     for _, v in ipairs(self.arr) do
@@ -47,8 +47,8 @@ function LuaHelpers:filter(fn) -- LuaHelpers
     return self:with(out)
 end
 
--- Range returns a new LuaHelpers with the inner table set to a range from first to last, skipping whatever is provided in the step value.
-function LuaHelpers:range(first, last, step) -- LuaHelpers
+-- Range returns a new TableHelper with the inner table set to a range from first to last, skipping whatever is provided in the step value.
+function TableHelper:range(first, last, step) -- TableHelper
     step = step or 1
     out = {}
 
@@ -60,7 +60,7 @@ function LuaHelpers:range(first, last, step) -- LuaHelpers
 end
 
 -- All returns true if all of the elements in the inner table pass the predicate; else it returns false.
-function LuaHelpers:all(fn) -- bool
+function TableHelper:all(fn) -- bool
     for _, v in pairs(self.arr) do
         if not fn(v) then
             return false
@@ -71,7 +71,7 @@ function LuaHelpers:all(fn) -- bool
 end
 
 -- Any returns true if any of the elements in the inner table pass the predicate; else it returns false.
-function LuaHelpers:any(fn) -- bool
+function TableHelper:any(fn) -- bool
     for _, v in pairs(self.arr) do
         if fn(v) then
             return true
@@ -82,7 +82,7 @@ function LuaHelpers:any(fn) -- bool
 end
 
 -- Break returns all elements until the predicate passes, followed by the first matching element and the remaining ones.
-function LuaHelpers:break_(fn) -- table, table
+function TableHelper:break_(fn) -- table, table
     local left, right, broken = {}, {}, false
 
     for _, v in ipairs(self.arr) do
@@ -97,9 +97,7 @@ function LuaHelpers:break_(fn) -- table, table
     return left, right
 end
 
-
-
 -- Implode creates a string, separated by the given character, containing all of the values in the inner table.
-function LuaHelpers:implode(char) -- string
+function TableHelper:implode(char) -- string
     return table.concat(self.arr, char)
 end
