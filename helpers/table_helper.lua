@@ -152,6 +152,22 @@ function TableHelper:dropWhile(fn) -- TableHelper
     return self:make(out)
 end
 
+-- Elem returns true if the table contains the given element; else it returns false.
+function TableHelper:elem(x) -- bool
+    for _, v in pairs(self.table) do
+        if x == v then
+            return true
+        end
+    end
+
+    return false
+end
+
+-- Implode creates a string, separated by the given character, containing all of the values in the table.
+function TableHelper:implode(char) -- string
+    return table.concat(self.table, char)
+end
+
 -- Sum returns the sum of all elements in the table.
 function TableHelper:sum() -- int
     local out = 0
@@ -161,11 +177,6 @@ function TableHelper:sum() -- int
     end
 
     return out
-end
-
--- Implode creates a string, separated by the given character, containing all of the values in the table.
-function TableHelper:implode(char) -- string
-    return table.concat(self.table, char)
 end
 
 return TableHelper
