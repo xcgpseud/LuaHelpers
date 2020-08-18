@@ -123,12 +123,9 @@ function TableHelper:drop(n) -- TableHelper
         return self:make({})
     end
 
-    -- Doing it with an incrementing count variable rather than accessing the numerical index in case of dictionary table
-    local out, i = {}, 1
-    for _, v in ipairs(self.table) do
-        if i > n then
-            table.insert(out, v)
-        end
+    local out = {}
+    for i = n + 1, #self.table do
+        table.insert(out, self.table[i])
 
         i = i + 1
     end
@@ -161,6 +158,74 @@ function TableHelper:elem(x) -- bool
     end
 
     return false
+end
+
+-- Foldl iteratively applies the function from left to right, beginning with the init.
+function TableHelper:foldl(init, fn)
+    if #self.table == 0 then
+        return init
+    end
+
+    local out
+
+    for i = 1, #self.table do
+        if i == 1 then
+            out = fn(init, self.table[i])
+        else
+            out = fn(out, self.table[i])
+        end
+
+        i = i + 1
+    end
+
+    return out
+end
+
+-- Foldl1 iteratively applies the function from left to right, beginning with the first element.
+function TableHelper:foldl1(fn)
+    local out = self.table[1]
+
+    for i = 2, #self.table do
+        out = fn(out, self.table[i])
+
+        i = i + 1
+    end
+
+    return out
+end
+
+-- Foldr iteratively applies the function from right to left, beginning with the init.
+function TableHelper:foldr(init, fn)
+    if #self.table == 0 then
+        return init
+    end
+
+    local out
+
+    for i = #self.table, 1, -1 do
+        if i == #self.table then
+            out = fn(init, self.table[i])
+        else
+            out = fn(out, self.table[i])
+        end
+    end
+
+    return out
+end
+
+-- Foldr1 iteratively applies the function from right to left, beginning with the last element.
+function TableHelper:foldr1(fn)
+    local out
+
+    for i = #self.table, 1, -1 do
+        if i == #self.table then
+            out = self.table[i]
+        else
+            out = fn(out, self.table[i])
+        end
+    end
+
+    return out
 end
 
 -- Implode creates a string, separated by the given character, containing all of the values in the table.
