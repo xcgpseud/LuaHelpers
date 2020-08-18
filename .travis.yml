@@ -2,6 +2,7 @@ language: lua
 
 script:
         - cd test
+        - sudo apt install -y lua5.3
         - lua5.3 *.lua -v
 
 notifications:
