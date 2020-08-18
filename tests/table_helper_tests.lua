@@ -13,6 +13,12 @@ funcs = {
     end,
     checkUpper = function(x)
         return string.upper(x) == x
+    end,
+    multiply = function(x, y)
+        return x * y
+    end,
+    concatUpper = function(x, y)
+        return string.upper(x) .. " " .. string.upper(y)
     end
 }
 
@@ -161,6 +167,64 @@ TestTableHelper = {
         }, {
             input = {},
             output = 0
+        }},
+        foldl = {{
+            input = {2, 10},
+            init = 5,
+            fn = funcs.multiply,
+            output = 100 -- 5 * 2 * 10
+        }, {
+            input = {"hello", "world", "it's", "me"},
+            init = "uh...",
+            fn = funcs.concatUpper,
+            output = "UH... HELLO WORLD IT'S ME"
+        }, {
+            input = {},
+            init = 2,
+            fn = funcs.multiply,
+            output = 2
+        }},
+        foldl1 = {{
+            input = {2, 2, 10},
+            fn = funcs.multiply,
+            output = 40 -- 2 * 2 * 10
+        }, {
+            input = {"hello", "world", "it's", "me"},
+            fn = funcs.concatUpper,
+            output = "HELLO WORLD IT'S ME"
+        }, {
+            input = {2},
+            fn = funcs.multiply,
+            output = 2
+        }},
+        foldr = {{
+            input = {2, 10, 10},
+            init = 2,
+            fn = funcs.multiply,
+            output = 400 -- 2 * 10 * 10 * 2
+        }, {
+            input = {"hello", "world"},
+            init = "hey!",
+            fn = funcs.concatUpper,
+            output = "HEY! WORLD HELLO"
+        }, {
+            input = {},
+            init = 2,
+            fn = funcs.multiply,
+            output = 2
+        }},
+        foldr1 = {{
+            input = {2, 10, 20},
+            fn = funcs.multiply,
+            output = 400 -- 20 * 10 * 2
+        }, {
+            input = {"hello", "world", "it's me!"},
+            fn = funcs.concatUpper,
+            output = "IT'S ME! WORLD HELLO"
+        }, {
+            input = {2},
+            fn = funcs.multiply,
+            output = 2
         }}
     }
 }
@@ -265,6 +329,38 @@ end
 function TestTableHelper:testSum()
     for _, v in pairs(self.tests.sum) do
         local result = th:make(v.input):sum()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testFoldl()
+    for _, v in pairs(self.tests.foldl) do
+        local result = th:make(v.input):foldl(v.init, v.fn)
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testFoldl1()
+    for _, v in pairs(self.tests.foldl1) do
+        local result = th:make(v.input):foldl1(v.fn)
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testFoldr()
+    for _, v in pairs(self.tests.foldr) do
+        local result = th:make(v.input):foldr(v.init, v.fn)
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testFoldr1()
+    for _, v in pairs(self.tests.foldr1) do
+        local result = th:make(v.input):foldr1(v.fn)
 
         lu.assertEquals(result, v.output)
     end
