@@ -225,6 +225,46 @@ TestTableHelper = {
             input = {2},
             fn = funcs.multiply,
             output = 2
+        }},
+        group = {{
+            input = {1, 2, 3},
+            output = {{1}, {2}, {3}}
+        }, {
+            input = {1, 1, 2, 2, 1, 2, 3, 3, 3},
+            output = {{1, 1}, {2, 2}, {1}, {2}, {3, 3, 3}}
+        }, {
+            input = {"hi", "hi", "hello", "hi"},
+            output = {{"hi", "hi"}, {"hello"}, {"hi"}}
+        }},
+        head = {{
+            input = {1, 2, 3},
+            output = 1
+        }, {
+            input = {},
+            output = nil
+        }, {
+            input = {"hi", "world"},
+            output = "hi"
+        }},
+        init = {{
+            input = {1, 2, 3},
+            output = {1, 2}
+        }, {
+            input = {},
+            output = {}
+        }, {
+            input = {"hi", "world", "it's me"},
+            output = {"hi", "world"}
+        }},
+        inits = {{
+            input = {1, 2, 3},
+            output = {{}, {1}, {1, 2}, {1, 2, 3}}
+        }, {
+            input = {},
+            output = {}
+        }, {
+            input = {"hi", "world"},
+            output = {{}, {"hi"}, {"hi", "world"}}
         }}
     }
 }
@@ -363,6 +403,40 @@ function TestTableHelper:testFoldr1()
         local result = th:make(v.input):foldr1(v.fn)
 
         lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testGroup()
+    for _, v in pairs(self.tests.group) do
+        local result = th:make(v.input):group():get()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testHead()
+    for _, v in pairs(self.tests.head) do
+        local result = th:make(v.input):head()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testInit()
+    for _, v in pairs(self.tests.init) do
+        local result = th:make(v.input):init():get()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testInits()
+    for _, v in pairs(self.tests.inits) do
+        local inits = th:make(v.input):inits()
+
+        for i, init in ipairs(inits) do
+            lu.assertEquals(init, v.output[i])
+        end
     end
 end
 
