@@ -2,7 +2,7 @@ language: lua
 
 script:
         - cd test
-        - lua *.lua -v
+        - lua5.3 *.lua -v
 
 notifications:
         email:
