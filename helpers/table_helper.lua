@@ -228,6 +228,56 @@ function TableHelper:foldr1(fn)
     return out
 end
 
+-- Group returns a series of tables where each list contains only equal elements and the
+-- concatenation of the result is equal to the argument.
+function TableHelper:group()
+    local out = {}
+    local current = {}
+
+    for i, v in ipairs(self.table) do
+        table.insert(current, v)
+
+        if i == #self.table or v ~= self.table[i + 1] then
+            table.insert(out, current)
+            current = {}
+        end
+    end
+
+    return self:make(out)
+end
+
+-- Head returns the first element of the table.
+function TableHelper:head()
+    return self.table[next(self.table)]
+end
+
+-- Init returns all elements of the table except for the last one.
+function TableHelper:init()
+    local out = {}
+
+    for i = 1, #self.table - 1 do
+        table.insert(out, self.table[i])
+    end
+
+    return self:make(out)
+end
+
+-- Inits returns a table of inits, as if called recursively.
+function TableHelper:inits()
+    local out = {{}}
+
+    for i = 1, #self.table do
+        init = {}
+        for o = 1, i do
+            table.insert(init, self.table[o])
+        end
+
+        table.insert(out, init)
+    end
+
+    return self:make(out)
+end
+
 -- Implode creates a string, separated by the given character, containing all of the values in the table.
 function TableHelper:implode(char) -- string
     return table.concat(self.table, char)
