@@ -1,0 +1,10 @@
+language: lua
+
+script:
+        - sudo apt install -y lua5.3
+        - lua5.3 tests/*.lua -v
+
+notifications:
+        email:
+                on_success: change
+                on_failure: always
