@@ -59,6 +59,13 @@ TestTableHelper = {
             fn = funcs.checkUpper,
             output = {"HELLO", "WHAT'S UP?"}
         }},
+        abs = {{
+            input = {2, 4, 6},
+            output = {2, 4, 6}
+        }, {
+            input = {-2, -4, 6},
+            output = {2, 4, 6}
+        }},
         all = {{
             input = {2, 4, 6},
             fn = funcs.checkEven,
@@ -92,6 +99,13 @@ TestTableHelper = {
             input = {"hello", "what'S Up?"},
             fn = funcs.checkUpper,
             output = false
+        }},
+        average = {{
+            input = {1, 2, 3, 4, 5},
+            output = 3
+        }, {
+            input = {},
+            output = 0
         }},
         break_ = {{
             input = {1, 3, 4, 5, 7},
@@ -265,6 +279,48 @@ TestTableHelper = {
         }, {
             input = {"hi", "world"},
             output = {{}, {"hi"}, {"hi", "world"}}
+        }},
+        intercalate = {{
+            input = {9, 8},
+            tables = {{1, 2}, {3, 4}, {5, 6}},
+            output = {1, 2, 9, 8, 3, 4, 9, 8, 5, 6}
+        }, {
+            input = {},
+            tables = {{1, 2}, {3, 4}},
+            output = {1, 2, 3, 4}
+        }},
+        intersperse = {{
+            input = {4, 2, 0},
+            x = 1337,
+            output = {4, 1337, 2, 1337, 0}
+        }, {
+            input = {1, 2, 3},
+            x = {1, 2},
+            output = {1, {1, 2}, 2, {1, 2}, 3}
+        }},
+        isPrefixOf = {{
+            input = {1, 2, 3},
+            tbl = {1, 2},
+            output = false
+        }, {
+            input = {1, 2},
+            tbl = {1, 2, 3},
+            output = true
+        }, {
+            input = {1, 2, 3},
+            tbl = {1, 2, 4},
+            output = false
+        }, {
+            input = {},
+            tbl = {},
+            output = true
+        }},
+        last = {{
+            input = {1, 2, 3},
+            output = 3
+        }, {
+            input = {"hello", "world", "it's", "me"},
+            output = "me"
         }}
     }
 }
@@ -301,6 +357,14 @@ function TestTableHelper:testFilter()
     end
 end
 
+function TestTableHelper:testAbs()
+    for _, v in pairs(self.tests.abs) do
+        local result = th:make(v.input):abs():get()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
 function TestTableHelper:testAll()
     for _, v in pairs(self.tests.all) do
         local result = th:make(v.input):all(v.fn)
@@ -312,6 +376,14 @@ end
 function TestTableHelper:testAny()
     for _, v in pairs(self.tests.any) do
         local result = th:make(v.input):any(v.fn)
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testAverage()
+    for _, v in pairs(self.tests.average) do
+        local result = th:make(v.input):average()
 
         lu.assertEquals(result, v.output)
     end
@@ -437,6 +509,38 @@ function TestTableHelper:testInits()
         for i, init in ipairs(inits) do
             lu.assertEquals(init, v.output[i])
         end
+    end
+end
+
+function TestTableHelper:testIntercalate()
+    for _, v in pairs(self.tests.intercalate) do
+        local result = th:make(v.input):intercalate(v.tables):get()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testIntersperse()
+    for _, v in pairs(self.tests.intersperse) do
+        local result = th:make(v.input):intersperse(v.x):get()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testIsPrefixOf()
+    for _, v in pairs(self.tests.isPrefixOf) do
+        local result = th:make(v.input):isPrefixOf(v.tbl)
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testLast()
+    for _, v in pairs(self.tests.last) do
+        local result = th:make(v.input):last()
+
+        lu.assertEquals(result, v.output)
     end
 end
 

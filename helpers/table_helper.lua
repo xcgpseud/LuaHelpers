@@ -64,6 +64,17 @@ function TableHelper:filter(fn) -- TableHelper
     return self:make(out)
 end
 
+-- Abs returns all of the absolute values for all of the elements in the table.
+function TableHelper:abs()
+    out = {}
+
+    for _, v in ipairs(self.table) do
+        table.insert(out, math.abs(v))
+    end
+
+    return self:make(out)
+end
+
 -- All returns true if all of the elements in the table pass the predicate; else it returns false.
 function TableHelper:all(fn) -- bool
     for _, v in pairs(self.table) do
@@ -84,6 +95,20 @@ function TableHelper:any(fn) -- bool
     end
 
     return false
+end
+
+-- Average returns the average of all elements in the table.
+function TableHelper:average()
+    if #self.table == 0 then
+        return 0
+    end
+
+    local sum = 0
+    for _, v in pairs(self.table) do
+        sum = sum + v
+    end
+
+    return sum / #self.table
 end
 
 -- Break returns all elements until the predicate passes, followed by the first matching element and the remaining ones.
@@ -251,6 +276,11 @@ function TableHelper:head()
     return self.table[next(self.table)]
 end
 
+-- Implode creates a string, separated by the given character, containing all of the values in the table.
+function TableHelper:implode(char) -- string
+    return table.concat(self.table, char)
+end
+
 -- Init returns all elements of the table except for the last one.
 function TableHelper:init()
     local out = {}
@@ -278,9 +308,68 @@ function TableHelper:inits()
     return self:make(out)
 end
 
--- Implode creates a string, separated by the given character, containing all of the values in the table.
-function TableHelper:implode(char) -- string
-    return table.concat(self.table, char)
+-- Intercalate inserts the table in between each of the passed tables.
+function TableHelper:intercalate(tables)
+    local out = {}
+
+    for i, tbl in ipairs(tables) do
+        for _, v in ipairs(tbl) do
+            table.insert(out, v)
+        end
+
+        if i == #tables then
+            break
+        end
+
+        for _, v in ipairs(self.table) do
+            table.insert(out, v)
+        end
+    end
+
+    return self:make(out)
+end
+
+-- Intersperse inserts the passed element between each element of the table.
+function TableHelper:intersperse(x)
+    local out = {}
+
+    for i, v in ipairs(self.table) do
+        table.insert(out, v)
+
+        if i == #self.table then
+            break
+        end
+
+        table.insert(out, x)
+    end
+
+    return self:make(out)
+end
+
+-- IsPrefixOf returns true if the table is a prefix of the passed table; else false.
+function TableHelper:isPrefixOf(tbl)
+    if #self.table > #tbl then
+        return false
+    end
+
+    for i, v in ipairs(self.table) do
+        if tbl[i] ~= v then
+            return false
+        end
+    end
+
+    return true
+end
+
+-- Last returns the last element of the table
+function TableHelper:last()
+    local out
+
+    for _, v in ipairs(self.table) do
+        out = v
+    end
+
+    return out
 end
 
 -- Sum returns the sum of all elements in the table.
