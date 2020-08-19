@@ -44,8 +44,8 @@ end
 function TableHelper:map(fn) -- TableHelper
     out = {}
 
-    for _, v in ipairs(self.table) do
-        table.insert(out, fn(v))
+    for i = 1, #self.table do
+        table.insert(out, fn(self.table[i]))
     end
 
     return self:make(out)
@@ -55,7 +55,9 @@ end
 function TableHelper:filter(fn) -- TableHelper
     out = {}
 
-    for _, v in ipairs(self.table) do
+    for i = 1, #self.table do
+        local v = self.table[i]
+
         if fn(v) then
             table.insert(out, v)
         end
@@ -68,8 +70,8 @@ end
 function TableHelper:abs()
     out = {}
 
-    for _, v in ipairs(self.table) do
-        table.insert(out, math.abs(v))
+    for i = 1, #self.table do
+        table.insert(out, math.abs(self.table[i]))
     end
 
     return self:make(out)
@@ -77,8 +79,8 @@ end
 
 -- All returns true if all of the elements in the table pass the predicate; else it returns false.
 function TableHelper:all(fn) -- bool
-    for _, v in pairs(self.table) do
-        if not fn(v) then
+    for i = 1, #self.table do
+        if not fn(self.table[i]) then
             return false
         end
     end
@@ -88,8 +90,8 @@ end
 
 -- Any returns true if any of the elements in the table pass the predicate; else it returns false.
 function TableHelper:any(fn) -- bool
-    for _, v in pairs(self.table) do
-        if fn(v) then
+    for i = 1, #self.table do
+        if fn(self.table[i]) then
             return true
         end
     end
@@ -99,23 +101,26 @@ end
 
 -- Average returns the average of all elements in the table.
 function TableHelper:average()
-    if #self.table == 0 then
+    local len = #self.table
+    if len == 0 then
         return 0
     end
 
     local sum = 0
-    for _, v in pairs(self.table) do
-        sum = sum + v
+    for i = 1, len do
+        sum = sum + self.table[i]
     end
 
-    return sum / #self.table
+    return sum / len
 end
 
 -- Break returns all elements until the predicate passes, followed by the first matching element and the remaining ones.
 function TableHelper:break_(fn) -- TableHelper, TableHelper
     local left, right, broken = {}, {}, false
 
-    for _, v in ipairs(self.table) do
+    for i = 1, #self.table do
+        local v = self.table[i]
+
         if broken or fn(v) then
             table.insert(right, v)
             broken = true
@@ -131,7 +136,9 @@ end
 function TableHelper:delete(x) -- TableHelper
     local out, deleted = {}, false
 
-    for _, v in ipairs(self.table) do
+    for i = 1, #self.table do
+        local v = self.table[i]
+
         if deleted or v ~= x then
             table.insert(out, v)
         else
@@ -162,7 +169,9 @@ end
 function TableHelper:dropWhile(fn) -- TableHelper
     local out, failed = {}, false
 
-    for _, v in ipairs(self.table) do
+    for i = 1, #self.table do
+        local v = self.table[i]
+
         if failed then
             table.insert(out, v)
         elseif not fn(v) then
@@ -176,8 +185,8 @@ end
 
 -- Elem returns true if the table contains the given element; else it returns false.
 function TableHelper:elem(x) -- bool
-    for _, v in pairs(self.table) do
-        if x == v then
+    for i = 1, #self.table do
+        if x == self.table[i] then
             return true
         end
     end
@@ -259,7 +268,9 @@ function TableHelper:group()
     local out = {}
     local current = {}
 
-    for i, v in ipairs(self.table) do
+    for i = 1, #self.table do
+        local v = self.table[i]
+
         table.insert(current, v)
 
         if i == #self.table or v ~= self.table[i + 1] then
@@ -312,17 +323,17 @@ end
 function TableHelper:intercalate(tables)
     local out = {}
 
-    for i, tbl in ipairs(tables) do
-        for _, v in ipairs(tbl) do
-            table.insert(out, v)
+    for i = 1, #tables do
+        for o = 1, #tables[i] do
+            table.insert(out, tables[i][o])
         end
 
         if i == #tables then
             break
         end
 
-        for _, v in ipairs(self.table) do
-            table.insert(out, v)
+        for o = 1, #self.table do
+            table.insert(out, self.table[o])
         end
     end
 
@@ -333,8 +344,8 @@ end
 function TableHelper:intersperse(x)
     local out = {}
 
-    for i, v in ipairs(self.table) do
-        table.insert(out, v)
+    for i = 1, #self.table do
+        table.insert(out, self.table[i])
 
         if i == #self.table then
             break
@@ -352,8 +363,8 @@ function TableHelper:isPrefixOf(tbl)
         return false
     end
 
-    for i, v in ipairs(self.table) do
-        if tbl[i] ~= v then
+    for i = 1, #self.table do
+        if tbl[i] ~= self.table[i] then
             return false
         end
     end
@@ -363,21 +374,15 @@ end
 
 -- Last returns the last element of the table
 function TableHelper:last()
-    local out
-
-    for _, v in ipairs(self.table) do
-        out = v
-    end
-
-    return out
+    return self.table[#self.table]
 end
 
 -- Sum returns the sum of all elements in the table.
 function TableHelper:sum() -- int
     local out = 0
 
-    for _, v in pairs(self.table) do
-        out = out + v
+    for i = 1, #self.table do
+        out = out + self.table[i]
     end
 
     return out
