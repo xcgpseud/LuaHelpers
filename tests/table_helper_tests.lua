@@ -321,6 +321,16 @@ TestTableHelper = {
         }, {
             input = {"hello", "world", "it's", "me"},
             output = "me"
+        }},
+        length = {{
+            input = {1, 2, 3},
+            output = 3
+        }, {
+            input = {},
+            output = 0
+        }, {
+            input = {1},
+            output = 1
         }}
     }
 }
@@ -539,6 +549,14 @@ end
 function TestTableHelper:testLast()
     for _, v in pairs(self.tests.last) do
         local result = th:make(v.input):last()
+
+        lu.assertEquals(result, v.output)
+    end
+end
+
+function TestTableHelper:testLength()
+    for _, v in pairs(self.tests.length) do
+        local result = th:make(v.input):length()
 
         lu.assertEquals(result, v.output)
     end

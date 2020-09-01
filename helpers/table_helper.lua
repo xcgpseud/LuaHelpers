@@ -372,9 +372,14 @@ function TableHelper:isPrefixOf(tbl)
     return true
 end
 
--- Last returns the last element of the table
+-- Last returns the last element of the table.
 function TableHelper:last()
     return self.table[#self.table]
+end
+
+-- Length returns the length of the table.
+function TableHelper:length()
+    return #self.table
 end
 
 -- Sum returns the sum of all elements in the table.
